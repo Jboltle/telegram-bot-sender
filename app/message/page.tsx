@@ -17,33 +17,33 @@ export const jsonExampleObjects: string = `
 export const jsonExampleArray: string = `
 {["1234567", "89012345", ...]}`;
 
-const sampleText = 'Приклад тексту';
+const sampleText = 'Example of text';
 
 const MessagePage: FC = () => {
   const { setMessageType, messageType } = useGlobalState();
   const schema = yup.object().shape({
-    messageType: yup.string().required('Не обрано розмітку'),
+    messageType: yup.string().required('No markup is selected'),
     messageText: yup
       .string()
-      .required('Повідомлення не може бути  порожнім')
-      .test('len', `Не може бути більшим за ${MAX_SIZE} символів`, (val) => val.length < MAX_SIZE),
+      .required('The message cannot be empty')
+      .test('len', `Cannot be larger than ${MAX_SIZE} символів`, (val) => val.length < MAX_SIZE),
     attachment: yup
       .mixed<File>()
-      .required('Не завантажено список отримувачів')
+      .required('List of recipients not loaded')
       .test(
         'fileSize',
-        `Розмір файлу не повинен перебільшувати ${MAX_SIZE} Мб`,
+        `The file size should not be over ${MAX_SIZE} MB`,
         (val: File) => val?.size <= MAX_SIZE * 1024
       )
       .test(
         'fileFormat',
-        'Дозволено тільки JSON формат',
+        'Only JSON format is allowed',
         (val: File) => val?.name.split('.').pop() === 'json'
       ),
     botToken: yup
       .string()
-      .required('Токен не може бути порожнім')
-      .test('length', 'Токен не може бути меншим за 44 символи', (val) => val.length < 44),
+      .required('Token cannot be empty')
+      .test('length', 'Token cannot be less than 44 characters', (val) => val.length < 44),
   });
 
   function handleSettingMessageType(field: string, value: any, shouldValidate?: boolean) {
@@ -86,14 +86,14 @@ const MessagePage: FC = () => {
         <div className="parse-mode-block">
           <RadioGroup
             type="horizontal"
-            title="Оберіть розмітку повідомлення"
+            title="Choose a message marking"
             required={true}
             errors={errors.messageType}
             value={values.messageType}
             onChange={handleSettingMessageType}
             labels={[
               {
-                label: 'Звичайний текст',
+                label: 'Ordinary text',
                 value: 'plain',
               },
               {
@@ -111,13 +111,13 @@ const MessagePage: FC = () => {
           <div className="message-text">
             <TextArea
               name="messageText"
-              label="Введіть текст повідомлення"
+              label="Enter the message text"
               value={values.messageText}
               required={true}
               errors={errors.messageText}
               onChange={handleChange}
             />
-            <div className="message-block-tooltip">
+            <div className="messageBlockTooltip">
               Якщо ви хочете додати до повідомлення emoji (курсор повинен бути встановлений у поле
               для вводу повідомлення):
               <br />
@@ -136,14 +136,14 @@ const MessagePage: FC = () => {
               accept=".json"
               fieldClassName="lg:w-2/4"
               name="attachment"
-              label="Завантажте файл JSON (до 4 Мб)"
+              label="Put the JSON file (up to 4 MB)"
               required={true}
               errors={errors.attachment}
               onChange={handleChange}
             />
             <div className="targets-block-tooltip">
               Ви можете завантажити лише один JSON-файл. Він має містити ID клієнтів Telegram.
-              Формат JSON-файлів:<pre>{jsonExampleObjects}</pre>або<pre>{jsonExampleArray}</pre>
+              Формат JSON-файлів:<pre>{jsonExampleObjects}</pre>or<pre>{jsonExampleArray}</pre>
             </div>
           </div>
         </div>
@@ -151,7 +151,7 @@ const MessagePage: FC = () => {
           <div className="bot-info-input">
             <InputText
               name="botToken"
-              label="Введіть токен вашого бота"
+              label="Enter your bot token"
               required={true}
               errors={errors.botToken}
               onChange={handleChange}
